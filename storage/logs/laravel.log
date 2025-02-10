@@ -1,0 +1,122 @@
+[2025-02-09 04:41:50] production.ERROR: Uncaught Symfony\Component\Finder\Exception\DirectoryNotFoundException: The "C:\Users\Dell\Downloads\UltimatePOS-V6.5\UltimatePOS-CodeBase-V6.5\custom_views" directory does not exist. in C:\Users\Dell\Downloads\UltimatePOS-V6.5\UltimatePOS-CodeBase-V6.5\vendor\symfony\finder\Finder.php:649
+Stack trace:
+#0 C:\Users\Dell\Downloads\UltimatePOS-V6.5\UltimatePOS-CodeBase-V6.5\vendor\laravel\framework\src\Illuminate\Filesystem\Filesystem.php(569): Symfony\Component\Finder\Finder->in('C:\\Users\\Dell\\D...')
+#1 Command line code(1): Illuminate\Filesystem\Filesystem->files('C:\\Users\\Dell\\D...')
+#2 Command line code(1): getViews('C:\\Users\\Dell\\D...', Object(Illuminate\Filesystem\Filesystem))
+#3 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Symfony\\Component\\Finder\\Exception\\DirectoryNotFoundException: The \"C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\custom_views\" directory does not exist. in C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\finder\\Finder.php:649
+Stack trace:
+#0 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Filesystem\\Filesystem.php(569): Symfony\\Component\\Finder\\Finder->in('C:\\\\Users\\\\Dell\\\\D...')
+#1 Command line code(1): Illuminate\\Filesystem\\Filesystem->files('C:\\\\Users\\\\Dell\\\\D...')
+#2 Command line code(1): getViews('C:\\\\Users\\\\Dell\\\\D...', Object(Illuminate\\Filesystem\\Filesystem))
+#3 {main}
+  thrown at C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\finder\\Finder.php:649)
+[stacktrace]
+#0 {main}
+"} 
+[2025-02-09 04:41:50] production.ERROR: The "--columns" option does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\RuntimeException(code: 0): The \"--columns\" option does not exist. at C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php:223)
+[stacktrace]
+#0 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(150): Symfony\\Component\\Console\\Input\\ArgvInput->addLongOption('columns', 'uri,name,action...')
+#1 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(85): Symfony\\Component\\Console\\Input\\ArgvInput->parseLongOption('--columns=uri,n...')
+#2 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(74): Symfony\\Component\\Console\\Input\\ArgvInput->parseToken('--columns=uri,n...', true)
+#3 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\Input.php(56): Symfony\\Component\\Console\\Input\\ArgvInput->parse()
+#4 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Command\\Command.php(285): Symfony\\Component\\Console\\Input\\Input->bind(Object(Symfony\\Component\\Console\\Input\\InputDefinition))
+#5 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(153): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#6 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(1078): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#7 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteListCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#10 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#11 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#12 {main}
+"} 
+[2025-02-09 04:41:54] production.ERROR: The "--columns" option does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\RuntimeException(code: 0): The \"--columns\" option does not exist. at C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php:223)
+[stacktrace]
+#0 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(150): Symfony\\Component\\Console\\Input\\ArgvInput->addLongOption('columns', 'uri,name,action...')
+#1 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(85): Symfony\\Component\\Console\\Input\\ArgvInput->parseLongOption('--columns=uri,n...')
+#2 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(74): Symfony\\Component\\Console\\Input\\ArgvInput->parseToken('--columns=uri,n...', true)
+#3 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\Input.php(56): Symfony\\Component\\Console\\Input\\ArgvInput->parse()
+#4 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Command\\Command.php(285): Symfony\\Component\\Console\\Input\\Input->bind(Object(Symfony\\Component\\Console\\Input\\InputDefinition))
+#5 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(153): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#6 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(1078): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#7 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteListCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#10 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#11 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#12 {main}
+"} 
+[2025-02-09 04:41:58] production.ERROR: The "--columns" option does not exist. {"exception":"[object] (Symfony\\Component\\Console\\Exception\\RuntimeException(code: 0): The \"--columns\" option does not exist. at C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php:223)
+[stacktrace]
+#0 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(150): Symfony\\Component\\Console\\Input\\ArgvInput->addLongOption('columns', 'uri,name,action...')
+#1 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(85): Symfony\\Component\\Console\\Input\\ArgvInput->parseLongOption('--columns=uri,n...')
+#2 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\ArgvInput.php(74): Symfony\\Component\\Console\\Input\\ArgvInput->parseToken('--columns=uri,n...', true)
+#3 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Input\\Input.php(56): Symfony\\Component\\Console\\Input\\ArgvInput->parse()
+#4 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Command\\Command.php(285): Symfony\\Component\\Console\\Input\\Input->bind(Object(Symfony\\Component\\Console\\Input\\InputDefinition))
+#5 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(153): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#6 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(1078): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#7 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteListCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#8 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#10 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#11 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#12 {main}
+"} 
+[2025-02-09 04:43:27] production.ERROR: Uncaught ReflectionException: Class "App\Policies\ModelPolicy" does not exist in Command line code:1
+Stack trace:
+#0 Command line code(1): ReflectionClass->__construct('App\\Policies\\Mo...')
+#1 [internal function]: {closure}('App\\Policies\\Mo...', 'App\\Model')
+#2 Command line code(1): array_map(Object(Closure), Array, Array)
+#3 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught ReflectionException: Class \"App\\Policies\\ModelPolicy\" does not exist in Command line code:1
+Stack trace:
+#0 Command line code(1): ReflectionClass->__construct('App\\\\Policies\\\\Mo...')
+#1 [internal function]: {closure}('App\\\\Policies\\\\Mo...', 'App\\\\Model')
+#2 Command line code(1): array_map(Object(Closure), Array, Array)
+#3 {main}
+  thrown at Command line code:1)
+[stacktrace]
+#0 {main}
+"} 
+[2025-02-09 04:43:29] production.ERROR: Class "PaymentAccountController" does not exist {"exception":"[object] (ReflectionException(code: -1): Class \"PaymentAccountController\" does not exist at C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php:234)
+[stacktrace]
+#0 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(234): ReflectionClass->__construct('PaymentAccountC...')
+#1 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(156): Illuminate\\Foundation\\Console\\RouteListCommand->isVendorRoute(Object(Illuminate\\Routing\\Route))
+#2 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(125): Illuminate\\Foundation\\Console\\RouteListCommand->getRouteInformation(Object(Illuminate\\Routing\\Route))
+#3 [internal function]: Illuminate\\Foundation\\Console\\RouteListCommand->Illuminate\\Foundation\\Console\\{closure}(Object(Illuminate\\Routing\\Route), 100)
+#4 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Arr.php(560): array_map(Object(Closure), Array, Array)
+#5 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Collections\\Collection.php(768): Illuminate\\Support\\Arr::map(Array, Object(Closure))
+#6 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(126): Illuminate\\Support\\Collection->map(Object(Closure))
+#7 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteListCommand.php(110): Illuminate\\Foundation\\Console\\RouteListCommand->getRoutes()
+#8 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteListCommand->handle()
+#9 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#10 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#11 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#12 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(661): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#13 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(183): Illuminate\\Container\\Container->call(Array)
+#14 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Command\\Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#15 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(153): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#16 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(1078): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#17 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteListCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#18 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\symfony\\console\\Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#19 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(102): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#20 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(155): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#21 C:\\Users\\Dell\\Downloads\\UltimatePOS-V6.5\\UltimatePOS-CodeBase-V6.5\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#22 {main}
+"} 
+[2025-02-09 04:44:21] production.ERROR: Uncaught ReflectionException: Class "App\Policies\ModelPolicy" does not exist in Command line code:1
+Stack trace:
+#0 Command line code(1): ReflectionClass->__construct('App\\Policies\\Mo...')
+#1 [internal function]: {closure}('App\\Policies\\Mo...', 'App\\Model')
+#2 Command line code(1): array_map(Object(Closure), Array, Array)
+#3 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught ReflectionException: Class \"App\\Policies\\ModelPolicy\" does not exist in Command line code:1
+Stack trace:
+#0 Command line code(1): ReflectionClass->__construct('App\\\\Policies\\\\Mo...')
+#1 [internal function]: {closure}('App\\\\Policies\\\\Mo...', 'App\\\\Model')
+#2 Command line code(1): array_map(Object(Closure), Array, Array)
+#3 {main}
+  thrown at Command line code:1)
+[stacktrace]
+#0 {main}
+"} 

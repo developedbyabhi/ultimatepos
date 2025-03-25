@@ -774,6 +774,20 @@ class AdminSidebarMenu
             </svg>', 'active' => request()->segment(1) == 'manage-modules'])->order(60);
             }
 
+            //Sessions menu
+            if ($is_admin || auth()->user()->hasRole('Admin#' . session('business.id'))) {
+                $menu->url(action([\App\Http\Controllers\SessionController::class, 'index']), __('session.active_sessions', ['default' => 'Active Sessions']), ['icon' => '<svg aria-hidden="true" class="tw-size-5 tw-shrink-0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                <path d="M4 8v-2a2 2 0 0 1 2 -2h2"></path>
+                <path d="M4 16v2a2 2 0 0 0 2 2h2"></path>
+                <path d="M16 4h2a2 2 0 0 1 2 2v2"></path>
+                <path d="M16 20h2a2 2 0 0 0 2 -2v-2"></path>
+                <path d="M9 10l.01 0"></path>
+                <path d="M15 10l.01 0"></path>
+                <path d="M9.5 15a3.5 3.5 0 0 0 5 0"></path>
+              </svg>', 'active' => request()->segment(1) == 'sessions'])->order(63);
+            }
+
             //Booking menu
             if (in_array('booking', $enabled_modules) && (auth()->user()->can('crud_all_bookings') || auth()->user()->can('crud_own_bookings'))) {
                 $menu->url(action([\App\Http\Controllers\Restaurant\BookingController::class, 'index']), __('restaurant.bookings'), ['icon' => '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M11.5 21h-5.5a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v6" /><path d="M16 3v4" /><path d="M8 3v4" /><path d="M4 11h16" /><path d="M15 19l2 2l4 -4" /></svg>', 'active' => request()->segment(1) == 'bookings'])->order(65);

@@ -44,6 +44,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Restaurant;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalesCommissionAgentController;
+use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SalesOrderController;
 use App\Http\Controllers\SellController;
 use App\Http\Controllers\SellingPriceGroupController;
@@ -126,6 +127,12 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/user/profile', [UserController::class, 'getProfile'])->name('user.getProfile');
     Route::post('/user/update', [UserController::class, 'updateProfile'])->name('user.updateProfile');
     Route::post('/user/update-password', [UserController::class, 'updatePassword'])->name('user.updatePassword');
+
+    // Session management routes - admin only
+    Route::get('/sessions', [SessionController::class, 'index'])->name('sessions.index')
+        ->middleware('can:user.view');
+    Route::delete('/sessions/{id}', [SessionController::class, 'destroy'])->name('sessions.destroy')
+        ->middleware('can:user.delete');
 
     Route::resource('brands', BrandController::class);
 

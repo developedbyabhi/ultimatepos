@@ -20,6 +20,15 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/home';
 
     /**
+     * The middleware aliases for the application.
+     *
+     * @var array
+     */
+    protected $middlewareAliases = [
+        'check.admin' => \App\Http\Middleware\CheckAdmin::class,
+    ];
+
+    /**
      * Define your route model bindings, pattern filters, etc.
      *
      * @return void
@@ -27,6 +36,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->configureRateLimiting();
+        
+        // Register middleware aliases
+        foreach ($this->middlewareAliases as $key => $middleware) {
+            app('router')->aliasMiddleware($key, $middleware);
+        }
 
         $this->routes(function () {
             Route::prefix('api')

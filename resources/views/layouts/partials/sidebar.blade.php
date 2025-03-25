@@ -14,6 +14,27 @@
         </p>
     </a>
 
+    <!-- User Info Section -->
+    <div class="tw-px-4 tw-py-3 tw-border-b tw-border-gray-200">
+        @if(Auth::user())
+            <div class="tw-flex tw-items-center tw-mb-2">
+                <div class="tw-w-8 tw-h-8 tw-rounded-full tw-bg-@if(!empty(session('business.theme_color'))){{session('business.theme_color')}}@else{{'primary'}}@endif-700 tw-flex tw-items-center tw-justify-center tw-text-white tw-font-bold">
+                    {{ substr(Auth::user()->first_name, 0, 1) }}
+                </div>
+                <div class="tw-ml-2">
+                    <p class="tw-text-sm tw-font-medium tw-text-gray-800">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</p>
+                    <p class="tw-text-xs tw-text-gray-500">
+                        @if(session('login_time'))
+                            Login: {{ \Carbon\Carbon::parse(session('login_time'))->format('M d, h:i A') }}
+                        @else
+                            Login time not available
+                        @endif
+                    </p>
+                </div>
+            </div>
+        @endif
+    </div>
+
     <!-- Sidebar Menu -->
     {!! Menu::render('admin-sidebar-menu', 'adminltecustom') !!}
 

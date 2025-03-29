@@ -136,13 +136,14 @@ class RoleController extends Controller
                 ]);
 
                 //Include selling price group permissions
-                $spg_permissions = $request->input('radio_option');
+                $spg_permissions = $request->input('spg_permissions');
                 if (! empty($spg_permissions)) {
                     foreach ($spg_permissions as $spg_permission) {
                         $permissions[] = $spg_permission;
                     }
                 }
 
+                //Include radio option permissions
                 $radio_options = $request->input('radio_option');
                 if (! empty($radio_options)) {
                     foreach ($radio_options as $key => $value) {
@@ -357,8 +358,7 @@ class RoleController extends Controller
 
         if (! empty($non_existing_permissions)) {
             foreach ($non_existing_permissions as $new_permission) {
-                $time_stamp = \Carbon::now()->toDateTimeString();
-                Permission::create([
+                Permission::firstOrCreate([
                     'name' => $new_permission,
                     'guard_name' => 'web',
                 ]);

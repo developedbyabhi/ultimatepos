@@ -368,12 +368,20 @@
           <div class="col-md-12">
             <div class="checkbox">
               <label>
+                {!! Form::checkbox('permissions[]', 'product.verify', false, 
+                [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.product_verify' ) }}
+              </label>
+            </div>
+          </div>
+          {{-- <div class="col-md-12">
+            <div class="checkbox">
+              <label>
                 {!! Form::checkbox('permissions[]', 'view_purchase_price', false,['class' => 'input-icheck']); !!}
                 {{ __('lang_v1.view_purchase_price') }}
               </label>
               @show_tooltip(__('lang_v1.view_purchase_price_tooltip'))
             </div>
-          </div>
+          </div> --}}
         </div>
         </div>
         <hr>
@@ -897,6 +905,14 @@
               <label>
                 {!! Form::checkbox('permissions[]', 'edit_invoice_number', false, 
                 [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.add_edit_invoice_number' ) }}
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                {!! Form::checkbox('permissions[]', 'sell.verify', false, 
+                [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.sell_verify' ) }}
               </label>
             </div>
           </div>

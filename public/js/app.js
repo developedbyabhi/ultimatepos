@@ -886,6 +886,49 @@ $(document).ready(function() {
     });
     //End: CRUD for products
 
+    //Product verification
+    $(document).on('click', 'a.verify-product', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        
+        // Check if the user has permission to verify products
+        // This is a client-side check for better UX, server will still enforce permissions
+        if ($(this).data('is-admin') !== '1' && !$(this).data('can-verify')) {
+            toastr.error(LANG.unauthorized);
+            return false;
+        }
+        
+        swal({
+            title: LANG.sure,
+            text: "Are you sure you want to verify this product?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: false,
+        }).then((confirmed) => {
+            if (confirmed) {
+                $.ajax({
+                    url: url,
+                    dataType: 'json',
+                    success: function(result) {
+                        if (result.success == true) {
+                            toastr.success(result.msg);
+                            product_table.ajax.reload();
+                        } else {
+                            toastr.error(result.msg);
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 403) {
+                            toastr.error(LANG.unauthorized);
+                        } else {
+                            toastr.error(LANG.something_went_wrong);
+                        }
+                    }
+                });
+            }
+        });
+    });
+
     //bussiness settings start
 
     if ($('form#bussiness_edit_form').length > 0) {

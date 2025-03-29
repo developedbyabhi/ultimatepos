@@ -28,6 +28,7 @@
             <th>@lang('product.brand')</th>
             <th>@lang('product.tax')</th>
             <th>@lang('product.sku')</th>
+            <th>status</th>
             <th id="cf_1">{{ $custom_labels['product']['custom_field_1'] ?? '' }}</th>
             <th id="cf_2">{{ $custom_labels['product']['custom_field_2'] ?? '' }}</th>
             <th id="cf_3">{{ $custom_labels['product']['custom_field_3'] ?? '' }}</th>

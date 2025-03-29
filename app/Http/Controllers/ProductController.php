@@ -29,6 +29,18 @@ use Yajra\DataTables\Facades\DataTables;
 use App\Events\ProductsCreatedOrModified;
 use App\TransactionSellLine;
 
+/**
+ * Handles product management
+ * 
+ * Required permissions:
+ * - product.view
+ * - product.create
+ * - product.update
+ * - product.delete
+ * - product.opening_stock
+ * - product.verify (Required for verifying products - needs to be added to permissions table)
+ */
+
 class ProductController extends Controller
 {
     /**
@@ -90,6 +102,35 @@ class ProductController extends Controller
                 ->whereNull('v.deleted_at')
                 ->where('products.business_id', $business_id)
                 ->where('products.type', '!=', 'modifier');
+                
+            // Filter by verification status if user doesn't have admin role or verify permission
+            $user_id = auth()->user()->id;
+            $is_admin = auth()->user()->hasRole('Admin#' . $business_id) || auth()->user()->can('superadmin');
+            
+            if (!$is_admin && !auth()->user()->can('product.verify')) {
+                $query->where(function ($q) use ($user_id) {
+                    $q->where('products.is_verified', 1)
+                      ->orWhere('products.created_by', $user_id);
+                });
+            }
+            
+            // Filter by verification status if requested
+            $verification_status = request()->get('verification_status', null);
+            // dd($is_admin);
+            if (!empty($is_admin)) {
+                if ($verification_status == 'verified') {
+                    $query->where('products.is_verified', 1);
+                } elseif ($verification_status == 'unverified') {
+                    // Only allow admins and users with verify permission to see unverified products
+                    if ($is_admin || auth()->user()->can('product.verify')) {
+                        $query->where('products.is_verified', 0);
+                    } else {
+                        // For regular users, only show their own unverified products
+                        $query->where('products.is_verified', 0)
+                              ->where('products.created_by', $user_id);
+                    }
+                }
+            }
 
             if (! empty($location_id) && $location_id != 'none') {
                 if ($permitted_locations == 'all' || in_array($location_id, $permitted_locations)) {
@@ -128,7 +169,7 @@ class ProductController extends Controller
                 'products.product_custom_field10', 'products.product_custom_field11', 'products.product_custom_field12',
                 'products.product_custom_field13', 'products.product_custom_field14', 'products.product_custom_field15',
                 'products.product_custom_field16', 'products.product_custom_field17', 'products.product_custom_field18', 
-                'products.product_custom_field19', 'products.product_custom_field20',
+                'products.product_custom_field19', 'products.product_custom_field20','products.is_verified',
                 'products.alert_quantity',
                 DB::raw('SUM(vld.qty_available) as current_stock'),
                 DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
@@ -242,8 +283,14 @@ class ProductController extends Controller
                                 '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'addSellingPrices'], [$row->id]).'"><i class="fas fa-money-bill-alt"></i> '.__('lang_v1.add_selling_price_group_prices').'</a></li>';
                             }
 
+            $html .=
+                            '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'create'], ['d' => $row->id]).'"><i class="fa fa-copy"></i> '.__('lang_v1.duplicate_product').'</a></li>';
+                        }
+                        
+                        // Add verify button if user has permission and product is not verified
+                        if (auth()->user()->can('product.verify') && $row->is_verified == 0) {
                             $html .=
-                                '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'create'], ['d' => $row->id]).'"><i class="fa fa-copy"></i> '.__('lang_v1.duplicate_product').'</a></li>';
+                            '<li><a href="'.action([\App\Http\Controllers\ProductController::class, 'verify'], [$row->id]).'" class="verify-product"><i class="fa fa-check-circle"></i> '.__('Verify Product').'</a></li>';
                         }
 
                         if (! empty($row->media->first())) {
@@ -292,6 +339,24 @@ class ProductController extends Controller
                     'selling_price',
                     '<div style="white-space: nowrap;">@format_currency($min_price) @if($max_price != $min_price && $type == "variable") -  @format_currency($max_price)@endif </div>'
                 )
+                ->addColumn(
+                    'verification_status',
+                    function ($row) {
+                        if ($row->is_verified) {
+                            return '<span class="label bg-success">Verified</span>';
+                        } else {
+                            $user_id = auth()->user()->id;
+                            $business_id = request()->session()->get('user.business_id');
+                            $is_admin = auth()->user()->hasRole('Admin#' . $business_id) || auth()->user()->can('superadmin');
+                            
+                            if ($is_admin || auth()->user()->can('product.verify') || $row->created_by == $user_id) {
+                                return '<span class="label bg-warning">Unverified</span>';
+                            } else {
+                                return '<span class="label bg-danger">Not Available</span>';
+                            }
+                        }
+                    }
+                )
                 ->filterColumn('products.sku', function ($query, $keyword) {
                     $query->whereHas('variations', function ($q) use ($keyword) {
                         $q->where('sub_sku', 'like', "%{$keyword}%");
@@ -306,7 +371,7 @@ class ProductController extends Controller
                             return '';
                         }
                     }, ])
-                ->rawColumns(['action', 'image', 'mass_delete', 'product', 'selling_price', 'purchase_price', 'category', 'current_stock'])
+                ->rawColumns(['action', 'image', 'mass_delete', 'product', 'selling_price', 'purchase_price', 'category', 'current_stock', 'verification_status'])
                 ->make(true);
         }
 
@@ -456,6 +521,7 @@ class ProductController extends Controller
             $product_details = $request->only($form_fields);
             $product_details['business_id'] = $business_id;
             $product_details['created_by'] = $request->session()->get('user.id');
+            $product_details['is_verified'] = 0; // Set new products as unverified by default
 
             $product_details['enable_stock'] = (! empty($request->input('enable_stock')) && $request->input('enable_stock') == 1) ? 1 : 0;
             $product_details['not_for_selling'] = (! empty($request->input('not_for_selling')) && $request->input('not_for_selling') == 1) ? 1 : 0;
@@ -2379,5 +2445,65 @@ class ProductController extends Controller
         $filename = 'products-export-'.\Carbon::now()->format('Y-m-d').'.xlsx';
 
         return Excel::download(new ProductsExport, $filename);
+    }
+
+    /**
+     * Verify a product
+     * 
+     * Requires 'product.verify' permission which needs to be added to the permissions table
+     * This permission should be added to the roles management interface under the "Product" section
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function verify($id)
+    {
+        if (! auth()->user()->can('product.verify')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            $business_id = request()->session()->get('user.business_id');
+            $user_id = request()->session()->get('user.id');
+            
+            $product = Product::where('business_id', $business_id)
+                        ->findOrFail($id);
+            
+            // Check if product is already verified
+            if ($product->is_verified) {
+                return ['success' => 0, 
+                        'msg' => __('Product is already verified')
+                       ];
+            }
+            
+            // Check if user is admin or has verify permission
+            $is_admin = auth()->user()->hasRole('Admin#' . $business_id) || auth()->user()->can('superadmin');
+            
+            if (!$is_admin && $product->created_by != $user_id && !auth()->user()->can('product.verify')) {
+                throw new \Exception(__('Unauthorized action. You cannot verify products created by others.'));
+            }
+            
+            $product->is_verified = 1;
+            $product->verified_by = $user_id;
+            $product->verified_at = \Carbon::now();
+            $product->save();
+            
+            // Optionally dispatch an event to notify the product creator
+            if (class_exists('\App\Events\ProductVerified')) {
+                event(new \App\Events\ProductVerified($product));
+            }
+
+            $output = ['success' => 1,
+                'msg' => __('Product verified successfully'),
+            ];
+        } catch (\Exception $e) {
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+
+            $output = ['success' => 0,
+                'msg' => __('messages.something_went_wrong'),
+            ];
+        }
+
+        return $output;
     }
 }

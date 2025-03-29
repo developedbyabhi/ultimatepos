@@ -358,6 +358,14 @@
           <div class="col-md-12">
             <div class="checkbox">
               <label>
+                {!! Form::checkbox('permissions[]', 'product.verify', in_array('product.verify', $role_permissions), 
+                [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.product_verify' ) }}
+              </label>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
                 {!! Form::checkbox('permissions[]', 'product.opening_stock', in_array('product.opening_stock', $role_permissions), 
                 [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.add_opening_stock' ) }}
               </label>

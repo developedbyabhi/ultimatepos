@@ -103,7 +103,10 @@ class SellController extends Controller
                     $query->where('transactions.sub_type', '!=', 'project_invoice')
                           ->orWhereNull('transactions.sub_type');
                 });
-            }         
+            }
+            
+            // Add verification status to the query
+            $sells->addSelect('transactions.is_verified', 'transactions.verified_by', 'transactions.verified_at');
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
@@ -268,6 +271,14 @@ class SellController extends Controller
             if (! empty(request()->input('status'))) {
                 $sells->where('transactions.status', request()->input('status'));
             }
+            
+            // Add filter for verification status
+            if (request()->has('is_verified')) {
+                $is_verified = request()->input('is_verified');
+                if ($is_verified !== '') {
+                    $sells->where('transactions.is_verified', $is_verified);
+                }
+            }
 
             if (! empty(request()->input('sales_cmsn_agnt'))) {
                 $sells->where('transactions.commission_agent', request()->input('sales_cmsn_agnt'));
@@ -426,6 +437,16 @@ class SellController extends Controller
 
                                 $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?delivery_note=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.delivery_note').'</a></li>';
                             }
+                            
+                            // Add verification action for admins
+                            if (auth()->user()->can('sell.verify')) {
+                                if (!$row->is_verified) {
+                                    $html .= '<li><form action="'.action([\App\Http\Controllers\SellController::class, 'verifySell'], [$row->id]).'" method="POST" style="display:inline-block;">'.csrf_field().'<button type="submit" class="btn btn-link p-0"><i class="fas fa-check-circle"></i> '.__('lang_v1.verify_sell').'</button></form></li>';
+                                } else {
+                                    $html .= '<li><form action="'.action([\App\Http\Controllers\SellController::class, 'unverifySell'], [$row->id]).'" method="POST" style="display:inline-block;">'.csrf_field().'<button type="submit" class="btn btn-link p-0"><i class="fas fa-times-circle"></i> '.__('lang_v1.unverify_sell').'</button></form></li>';
+                                }
+                            }
+                            
                             $html .= '<li class="divider"></li>';
                             if (! $only_shipments) {
                                 if ($row->is_direct_sale == 0 && ! auth()->user()->can('sell.update') &&
@@ -544,7 +565,7 @@ class SellController extends Controller
                     if ($is_crm && ! empty($row->crm_is_order_request)) {
                         $invoice_no .= ' &nbsp;<small class="label bg-yellow label-round no-print" title="'.__('crm::lang.order_request').'"><i class="fas fa-tasks"></i></small>';
                     }
-
+                    
                     return $invoice_no;
                 })
                 ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
@@ -588,6 +609,13 @@ class SellController extends Controller
 
                     return $status;
                 })
+                ->addColumn('verification_status', function ($row) {
+                    if ($row->is_verified) {
+                        return '<span class="label bg-green label" title="' . __('lang_v1.verified') . '"><i class="fas fa-check"></i> ' . __('lang_v1.verified') . '</span>';
+                    } else {
+                        return '<span class="label bg-orange label" title="' . __('lang_v1.not_verified') . '"><i class="fas fa-exclamation-triangle"></i> ' . __('lang_v1.not_verified') . '</span>';
+                    }
+                })
                 ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
                 ->setRowAttr([
                     'data-href' => function ($row) {
@@ -598,7 +626,7 @@ class SellController extends Controller
                         }
                     }, ]);
 
-            $rawColumns = ['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'verification_status'];
 
             return $datatable->rawColumns($rawColumns)
                       ->make(true);
@@ -794,7 +822,17 @@ class SellController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Check if user is admin
+        $is_admin = $this->businessUtil->is_admin(auth()->user());
+        
+        // If not admin, set is_verified to false
+        if (!$is_admin) {
+            $request->merge(['is_verified' => 0]);
+        } else {
+            $request->merge(['is_verified' => 1]);
+        }
+        
+        // Continue with the original store logic
     }
 
     /**
@@ -1688,5 +1726,87 @@ class SellController extends Controller
 
         echo 'Mapping reset success';
         exit;
+    }
+
+    /**
+     * Verify a sell transaction
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function verifySell($id)
+    {
+        if (! auth()->user()->can('sell.verify')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            $business_id = request()->session()->get('user.business_id');
+            
+            $transaction = Transaction::where('business_id', $business_id)
+                                ->where('type', 'sell')
+                                ->findOrFail($id);
+            
+            // Store the transaction state before update for activity log
+            $transaction_before = $transaction->replicate();
+            
+            // Update verification status
+            $transaction->is_verified = 1;
+            $transaction->verified_by = auth()->user()->id;
+            $transaction->verified_at = \Carbon::now();
+            $transaction->save();
+            
+            // Log the verification activity
+            $activity_property = ['update_note' => 'Sell verified by ' . auth()->user()->username];
+            $this->transactionUtil->activityLog($transaction, 'sell_verified', $transaction_before, $activity_property);
+            
+            $output = ['success' => 1,
+                'msg' => __('lang_v1.sell_verified_success'),
+            ];
+            
+            return redirect()->back()->with(['status' => $output]);
+            
+        } catch (\Exception $e) {
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+            
+            $output = ['success' => 0,
+                'msg' => __('messages.something_went_wrong'),
+            ];
+            
+            return redirect()->back()->with(['status' => $output]);
+        }
+    }
+    
+    public function unverifySell($id)
+    {
+        if (! auth()->user()->can('sell.verify')) {
+            abort(403, 'Unauthorized action.');
+        }
+        try {
+            $business_id = request()->session()->get('user.business_id');
+            $transaction = Transaction::where('business_id', $business_id)
+                                ->where('type', 'sell')
+                                ->findOrFail($id);
+            // Store the transaction state before update for logging
+            $transaction_before = $transaction->replicate();
+            // Update verification status to unverified
+            $transaction->is_verified = 0;
+            $transaction->verified_by = null;
+            $transaction->verified_at = null;
+            $transaction->save();
+            // Log the unverification activity (similar to verification)
+            $activity_property = ['update_note' => 'Sell unverified by ' . auth()->user()->username];
+            $this->transactionUtil->activityLog($transaction, 'sell_unverified', $transaction_before, $activity_property);
+            $output = ['success' => 1,
+                'msg' => __('lang_v1.sell_unverified_success')
+            ];
+            return redirect()->back()->with(['status' => $output]);
+        } catch (\Exception $e) {
+            \Log::emergency('File:'.$e->getFile().' Line:'.$e->getLine().' Message:'.$e->getMessage());
+            $output = ['success' => 0,
+                'msg' => __('messages.something_went_wrong')
+            ];
+            return redirect()->back()->with(['status' => $output]);
+        }
     }
 }

@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
+    use SoftDeletes;
+    
     /**
      * The attributes that aren't mass assignable.
      *
@@ -22,7 +25,15 @@ class Product extends Model
      */
     protected $casts = [
         'sub_unit_ids' => 'array',
+        'is_verified' => 'boolean',
     ];
+    
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['deleted_at', 'verified_at'];
 
     /**
      * Get the products image.
@@ -221,5 +232,62 @@ class Product extends Model
     public function rack_details()
     {
         return $this->hasMany(\App\ProductRack::class);
+    }
+    
+    /**
+     * Get the user who verified the product.
+     */
+    public function verifiedBy()
+    {
+        return $this->belongsTo(\App\User::class, 'verified_by');
+    }
+    
+    /**
+     * Scope a query to only include verified products.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVerified($query)
+    {
+        return $query->where('is_verified', 1);
+    }
+    
+    /**
+     * Scope a query to only include unverified products.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeUnverified($query)
+    {
+        return $query->where('is_verified', 0);
+    }
+    
+    /**
+     * Scope a query to only include products visible to the given user.
+     * - If user is admin or superadmin, show all products
+     * - Otherwise, show only verified products or products created by the user
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  \App\User  $user
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVisibleTo($query, $user)
+    {
+        // Check if user is admin for their business or superadmin
+        $is_admin = $user->hasRole('Admin#' . $user->business_id) || $user->hasRole('Superadmin');
+        dd($user);
+        
+        if ($is_admin) {
+            // Admin can see all products
+            return $query;
+        } else {
+            // Regular users can only see verified products or products they created
+            return $query->where(function ($q) use ($user) {
+                $q->where('is_verified', 1)
+                  ->orWhere('created_by', $user->id);
+            });
+        }
     }
 }

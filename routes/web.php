@@ -61,6 +61,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VariationTemplateController;
 use App\Http\Controllers\WarrantyController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth; // Added Auth facade
+
 
 /*
 |--------------------------------------------------------------------------
@@ -193,8 +195,15 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/products/save_quick_product', [ProductController::class, 'saveQuickProduct']);
     Route::get('/products/get-combo-product-entry-row', [ProductController::class, 'getComboProductEntryRow']);
     Route::post('/products/toggle-woocommerce-sync', [ProductController::class, 'toggleWooCommerceSync']);
+    Route::get('/products/verify/{id}', [ProductController::class, 'verify'])
+        ->name('products.verify')
+        ->middleware('can:product.verify');
 
-    Route::resource('products', ProductController::class);
+Route::resource('products', ProductController::class)->middleware('can:product.view');
+Route::post('/products', [ProductController::class, 'store'])->middleware('can:product.create');
+Route::put('/products/{id}', [ProductController::class, 'update'])->middleware('can:product.update');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->middleware('can:product.delete');
+
     Route::get('/toggle-subscription/{id}', 'SellPosController@toggleRecurringInvoices');
     Route::post('/sells/pos/get-types-of-service-details', 'SellPosController@getTypesOfServiceDetails');
     Route::get('/sells/subscriptions', 'SellPosController@listSubscriptions');
@@ -224,7 +233,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/sells/convert-to-proforma/{id}', [SellPosController::class, 'convertToProforma']);
     Route::get('/sells/quotations', [SellController::class, 'getQuotations']);
     Route::get('/sells/draft-dt', [SellController::class, 'getDraftDatables']);
-    Route::resource('sells', SellController::class)->except(['show']);
+Route::resource('sells', SellController::class)->except(['show']);
+Route::post('/sells/verify/{id}', [SellController::class, 'verifySell'])->name('sells.verify');
+Route::post('/sells/unverify/{id}', [SellController::class, 'unverifySell'])->name('sells.unverify');
+
 
     Route::get('/import-sales', [ImportSalesController::class, 'index']);
     Route::post('/import-sales/preview', [ImportSalesController::class, 'preview']);

@@ -124,6 +124,30 @@
                             </label>
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('verification_status', __('lang_v1.verification_status') . ':') !!}
+                            {!! Form::select(
+                                'verification_status',
+                                ['all' => __('lang_v1.all'), 'verified' => __('lang_v1.verified'), 'unverified' => __('lang_v1.unverified')],
+                                null,
+                                [
+                                    'class' => 'form-control select2',
+                                    'style' => 'width:100%',
+                                    'id' => 'verification_status',
+                                    'placeholder' => __('lang_v1.all'),
+                                ],
+                            ) !!}
+                            <p class="help-block text-info">
+                                <i class="fa fa-info-circle"></i> 
+                                @if($is_admin || auth()->user()->can('product.verify'))
+                                    @lang('Unverified products are only visible to admins and their creators')
+                                @else
+                                    @lang('You can only see your own unverified products')
+                                @endif
+                            </p>
+                        </div>
+                    </div>
                     @if ($is_woocommerce)
                         <div class="col-md-3">
                             <div class="form-group">
@@ -248,6 +272,7 @@
                         d.active_state = $('#active_state').val();
                         d.not_for_selling = $('#not_for_selling').is(':checked');
                         d.location_id = $('#location_id').val();
+                        d.verification_status = $('#verification_status').val();
                         if ($('#repair_model_id').length == 1) {
                             d.repair_model_id = $('#repair_model_id').val();
                         }
@@ -321,6 +346,24 @@
                     {
                         data: 'sku',
                         name: 'products.sku'
+                    },
+                    {
+                        data: 'verification_status',
+                        name: 'products.is_verified',
+                        searchable: false,
+                        render: function(data, type, row) {
+                            console.log(type);
+                            if (type === 'display') {
+                                if (data.indexOf('Verified') !== -1) {
+                                    return '<span class="label bg-green">' + data.replace(/(<([^>]+)>)/gi, "") + '</span>';
+                                } else if (data.indexOf('Unverified') !== -1) {
+                                    return '<span class="label bg-orange">' + data.replace(/(<([^>]+)>)/gi, "") + '</span>';
+                                } else {
+                                    return '<span class="label bg-danger">' + data.replace(/(<([^>]+)>)/gi, "") + '</span>';
+                                }
+                            }
+                            return data;
+                        }
                     },
                     {
                         data: 'product_custom_field1',
@@ -530,7 +573,7 @@
             });
 
             $(document).on('change',
-                '#product_list_filter_type, #product_list_filter_category_id, #product_list_filter_brand_id, #product_list_filter_unit_id, #product_list_filter_tax_id, #location_id, #active_state, #repair_model_id',
+                '#product_list_filter_type, #product_list_filter_category_id, #product_list_filter_brand_id, #product_list_filter_unit_id, #product_list_filter_tax_id, #location_id, #active_state, #repair_model_id, #verification_status',
                 function() {
                     if ($("#product_list_tab").hasClass('active')) {
                         product_table.ajax.reload();
@@ -594,6 +637,35 @@
                     });
                 });
             @endif
+        });
+
+        // Handle product verification
+        $(document).on('click', '.verify-product', function(e) {
+            e.preventDefault();
+            var href = $(this).attr('href');
+            
+            swal({
+                title: LANG.sure,
+                text: "Are you sure you want to verify this product?",
+                icon: "info",
+                buttons: true,
+            }).then((willVerify) => {
+                if (willVerify) {
+                    $.ajax({
+                        method: "GET",
+                        url: href,
+                        dataType: "json",
+                        success: function(result) {
+                            if (result.success) {
+                                toastr.success(result.msg);
+                                product_table.ajax.reload();
+                            } else {
+                                toastr.error(result.msg);
+                            }
+                        }
+                    });
+                }
+            });
         });
 
         $(document).on('shown.bs.modal', 'div.view_product_modal, div.view_modal, #view_product_modal',
@@ -732,6 +804,7 @@
                                 d.type = $('#product_list_filter_type').val();
                                 d.active_state = $('#active_state').val();
                                 d.not_for_selling = $('#not_for_selling').is(':checked');
+                                d.verification_status = $('#verification_status').val();
                                 if ($('#repair_model_id').length == 1) {
                                     d.repair_model_id = $('#repair_model_id').val();
                                 }

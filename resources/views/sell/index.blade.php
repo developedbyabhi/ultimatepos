@@ -79,6 +79,7 @@
                             <th>@lang('lang_v1.sell_due')</th>
                             <th>@lang('lang_v1.sell_return_due')</th>
                             <th>@lang('lang_v1.shipping_status')</th>
+                            <th>@lang('lang_v1.verification_status')</th>
                             <th>@lang('lang_v1.total_items')</th>
                             <th>@lang('lang_v1.types_of_service')</th>
                             <th>{{ $custom_labels['types_of_service']['custom_field_1'] ?? __('lang_v1.service_custom_field_1') }}
@@ -154,6 +155,8 @@
                 "ajax": {
                     "url": "/sells",
                     "data": function(d) {
+                        // Include verification status in the request
+                        d.show_verification_status = true;
                         if ($('#sell_list_filter_date_range').val()) {
                             var start = $('#sell_list_filter_date_range').data('daterangepicker')
                                 .startDate.format('YYYY-MM-DD');
@@ -251,6 +254,11 @@
                         name: 'shipping_status'
                     },
                     {
+                        data: 'verification_status',
+                        name: 'verification_status',
+                        orderable: false
+                    },
+                    {
                         data: 'total_items',
                         name: 'total_items',
                         "searchable": false
@@ -330,6 +338,9 @@
                 ],
                 "fnDrawCallback": function(oSettings) {
                     __currency_convert_recursively($('#sell_table'));
+                    
+                    // Initialize tooltips for verification status icons
+                    $('[data-toggle="tooltip"]').tooltip();
                 },
                 "footerCallback": function(row, data, start, end, display) {
                     var footer_sale_total = 0;
@@ -360,6 +371,9 @@
                 },
                 createdRow: function(row, data, dataIndex) {
                     $(row).find('td:eq(6)').attr('class', 'clickable_td');
+                    
+                    // Add verification status column class for all users
+                    $(row).find('td:eq(13)').attr('class', 'verification_status_td');
                 }
             });
 

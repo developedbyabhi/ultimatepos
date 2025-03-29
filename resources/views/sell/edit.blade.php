@@ -26,6 +26,10 @@
 @endphp
 <input type="hidden" id="item_addition_method" value="{{$business_details->item_addition_method}}">
 	{!! Form::open(['url' => action([\App\Http\Controllers\SellPosController::class, 'update'], ['po' => $transaction->id ]), 'method' => 'put', 'id' => 'edit_sell_form', 'files' => true ]) !!}
+<div class="form-group">
+    {!! Form::checkbox('is_verified', 1, $transaction->is_verified, ['id' => 'is_verified']); !!}
+    {!! Form::label('is_verified', __('Verify Sell')); !!}
+</div>
 
 	{!! Form::hidden('location_id', $transaction->location_id, ['id' => 'location_id', 'data-receipt_printer_type' => !empty($location_printer_type) ? $location_printer_type : 'browser', 'data-default_payment_accounts' => $transaction->location->default_payment_accounts]); !!}
 
@@ -834,6 +838,8 @@
 		<div class="col-md-12 text-center">
 	    	{!! Form::hidden('is_save_and_print', 0, ['id' => 'is_save_and_print']); !!}
 	    	<button type="button" class="tw-dw-btn tw-dw-btn-primary tw-text-white tw-dw-btn-lg" id="submit-sell">@lang('messages.update')</button>
+<input type="hidden" name="verified_by" value="{{ auth()->user()->id }}">
+<input type="hidden" name="verified_at" value="{{ now() }}">
 	    	<button type="button" id="save-and-print" class="tw-dw-btn tw-dw-btn-success tw-text-white tw-dw-btn-lg">@lang('lang_v1.update_and_print')</button>
 	    </div>
 	</div>

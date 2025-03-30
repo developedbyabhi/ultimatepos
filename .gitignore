@@ -1,11 +1,38 @@
-/node_modules
+# Laravel & PHP
+/vendor/
+/node_modules/
+composer.lock
+.env.example
+homestead.json
+Homestead.yaml
+
+# Laravel Storage & Cache
+/storage/*.key
+/storage/logs/
+/storage/framework/cache/
+/storage/framework/sessions/
+/storage/framework/views/
+
+# Public Generated Files
 /public/hot
 /public/storage
-/storage/*.key
-/vendor
-/.idea
-/.vagrant
-Homestead.json
-Homestead.yaml
+
+# IDE & Editor Files
+/.idea/
+/.vscode/
+/*.iml
+
+# Debug & System Files
 npm-debug.log
+yarn-debug.log
+yarn-error.log
 .scribe
+
+# Vagrant & Docker
+/.vagrant/
+/docker-compose.override.yml
+
+# Composer & NPM
+composer.phar
+package-lock.json
+pnpm-lock.yaml

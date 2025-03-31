@@ -136,6 +136,15 @@ class SalesOrderController extends Controller
                 $transaction_before = $transaction->replicate();
 
                 $transaction->status = $request->input('status');
+                
+                // Handle shipping image upload
+                if ($request->hasFile('shipping_image')) {
+                    $image = $request->file('shipping_image');
+                    $image_name = time() . '_' . $image->getClientOriginalName();
+                    $image->storeAs('public/shipping_images', $image_name);
+                    $transaction->shipping_image = $image_name;
+                }
+                
                 $transaction->save();
 
                 $activity_property = ['from' => $transaction_before->status, 'to' => $request->input('status')];

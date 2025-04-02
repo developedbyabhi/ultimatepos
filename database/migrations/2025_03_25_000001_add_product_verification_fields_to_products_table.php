@@ -17,7 +17,7 @@ class AddProductVerificationFieldsToProductsTable extends Migration
             $table->boolean('is_verified')->default(false)->after('not_for_selling');
             $table->unsignedInteger('verified_by')->nullable()->after('is_verified');
             $table->timestamp('verified_at')->nullable()->after('verified_by');
-            $table->softDeletes();
+            // $table->softDeletes();
 
             $table->foreign('verified_by')
                   ->references('id')

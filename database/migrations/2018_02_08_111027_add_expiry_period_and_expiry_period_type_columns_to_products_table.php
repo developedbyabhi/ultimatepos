@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             $table->decimal('expiry_period', 4, 2)->after('barcode_type')->nullable();
             $table->enum('expiry_period_type', ['days', 'months'])->after('expiry_period')->nullable();
+            $table->softDeletes();
+
         });
     }
 

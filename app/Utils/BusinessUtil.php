@@ -208,8 +208,45 @@ class BusinessUtil extends Util
             'sell_payment' => 'SP',
             'business_location' => 'BL',
         ];
-
-        //Disable inline tax editing
+        $business_details['pos_settings'] = json_encode([
+            "amount_rounding_method" => null,
+            "enable_sales_order" => "1",
+            "cmmsn_calculation_type" => "invoice_value",
+            "razor_pay_key_id" => null,
+            "razor_pay_key_secret" => null,
+            "stripe_public_key" => null,
+            "stripe_secret_key" => null,
+            "cash_denominations" => null,
+            "enable_cash_denomination_on" => "pos_screen",
+            "disable_pay_checkout" => 0,
+            "disable_draft" => 0,
+            "disable_express_checkout" => 0,
+            "hide_product_suggestion" => 0,
+            "hide_recent_trans" => 0,
+            "disable_discount" => 0,
+            "disable_order_tax" => 0,
+            "is_pos_subtotal_editable" => 0
+        ]);
+        // $business_details['pos_settings'] = [
+        //     "amount_rounding_method" => null,
+        //     "enable_sales_order" => "1",
+        //     "cmmsn_calculation_type" => "invoice_value",
+        //     "razor_pay_key_id" => null,
+        //     "razor_pay_key_secret" => null,
+        //     "stripe_public_key" => null,
+        //     "stripe_secret_key" => null,
+        //     "cash_denominations" => null,
+        //     "enable_cash_denomination_on" => "pos_screen",
+        //     "disable_pay_checkout" => 0,
+        //     "disable_draft" => 0,
+        //     "disable_express_checkout" => 0,
+        //     "hide_product_suggestion" => 0,
+        //     "hide_recent_trans" => 0,
+        //     "disable_discount" => 0,
+        //     "disable_order_tax" => 0,
+        //     "is_pos_subtotal_editable" => 0
+        // ];
+                //Disable inline tax editing
         $business_details['enable_inline_tax'] = 0;
 
         $business = Business::create_business($business_details);
@@ -416,7 +453,7 @@ class BusinessUtil extends Util
      */
     public function defaultPosSettings()
     {
-        return ['disable_pay_checkout' => 0, 'disable_draft' => 0, 'disable_express_checkout' => 0, 'hide_product_suggestion' => 0, 'hide_recent_trans' => 0, 'disable_discount' => 0, 'disable_order_tax' => 0, 'is_pos_subtotal_editable' => 0];
+        return ['disable_pay_checkout' => 0, 'disable_draft' => 0, 'disable_express_checkout' => 0, 'hide_product_suggestion' => 0, 'hide_recent_trans' => 0, 'disable_discount' => 0, 'disable_order_tax' => 0, 'is_pos_subtotal_editable' => 0, 'enable_sales_order'=>1];
     }
 
     /**

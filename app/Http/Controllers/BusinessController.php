@@ -445,6 +445,9 @@ class BusinessController extends Controller
                     $pos_settings[$key] = $value;
                 }
             }
+            // Force enable sales order permanently
+            $pos_settings['enable_sales_order'] = 1;
+            
             $business_details['pos_settings'] = json_encode($pos_settings);
 
             $business_details['custom_labels'] = json_encode($business_details['custom_labels']);

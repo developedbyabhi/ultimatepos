@@ -92,16 +92,7 @@
             </div>
         </div>
         <div class="clearfix"></div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                    {!! Form::checkbox('pos_settings[enable_sales_order]', 1, !empty($pos_settings['enable_sales_order']) , [ 'class' => 'input-icheck', 'id' => 'enable_sales_order']); !!} {{ __( 'lang_v1.enable_sales_order' ) }}
-                    </label>
-                  @show_tooltip(__('lang_v1.sales_order_help_text'))
-                </div>
-            </div>
-        </div>
+        <!-- Sales order option removed as it's now permanently enabled -->
         <div class="col-sm-4">
             <div class="form-group">
                 <div class="checkbox">

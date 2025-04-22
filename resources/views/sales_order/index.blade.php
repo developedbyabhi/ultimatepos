@@ -30,14 +30,12 @@
                 {!! Form::select('so_list_filter_status', $sales_order_statuses, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
             </div>
         </div>
-        @if(!empty($shipping_statuses))
-            <div class="col-md-3">
-                <div class="form-group">
-                    {!! Form::label('so_list_shipping_status', __('lang_v1.shipping_status') . ':') !!}
-                    {!! Form::select('so_list_shipping_status', $shipping_statuses, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
-                </div>
+        {{-- <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('so_list_verification_status', __('lang_v1.verification_status') . ':') !!}
+                {!! Form::select('so_list_verification_status', $verification_statuses, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
             </div>
-        @endif
+        </div> --}}
         <div class="col-md-3">
             <div class="form-group">
                 {!! Form::label('sell_list_filter_date_range', __('report.date_range') . ':') !!}
@@ -66,7 +64,7 @@
                         <th>@lang('lang_v1.contact_no')</th>
                         <th>@lang('sale.location')</th>
                         <th>@lang('sale.status')</th>
-                        <th>@lang('lang_v1.shipping_status')</th>
+                        <th>@lang('lang_v1.verification_status')</th>
                         <th>@lang('lang_v1.quantity_remaining')</th>
                         <th>@lang('lang_v1.added_by')</th>
                     </tr>
@@ -117,9 +115,9 @@ $(document).ready( function(){
                 if ($('#so_list_filter_status').length) {
                     d.status = $('#so_list_filter_status').val();
                 }
-                if ($('#so_list_shipping_status').length) {
-                    d.shipping_status = $('#so_list_shipping_status').val();
-                }
+             //   if ($('#so_list_verification_status').length) {
+             //       d.is_verified = $('#so_list_verification_status').val();
+            //    }
 
                 if($('#created_by').length) {
                     d.created_by = $('#created_by').val();
@@ -139,12 +137,12 @@ $(document).ready( function(){
             { data: 'mobile', name: 'contacts.mobile'},
             { data: 'business_location', name: 'bl.name'},
             { data: 'status', name: 'status'},
-            { data: 'shipping_status', name: 'shipping_status'},
+            { data: 'verification_status', name: 'verification_status'},
             { data: 'so_qty_remaining', name: 'so_qty_remaining', "searchable": false},
             { data: 'added_by', name: 'u.first_name'},
         ]
     });
-    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #created_by, #so_list_filter_status, #so_list_shipping_status',  function() {
+    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #created_by, #so_list_filter_status, #so_list_verification_status',  function() {
         sell_table.ajax.reload();
     });
 });

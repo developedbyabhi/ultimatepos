@@ -144,9 +144,9 @@
 							@endif
 							{!! Form::select('contact_id', 
 								[], null, ['class' => 'form-control mousetrap', 'id' => 'customer_id', 'placeholder' => 'Enter Customer name / phone', 'required']); !!}
-							<span class="input-group-btn">
+							{{-- <span class="input-group-btn">
 								<button type="button" class="btn btn-default bg-white btn-flat add_new_customer" data-name=""><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
-							</span>
+							</span> --}}
 						</div>
 						<small class="text-danger hide contact_due_text"><strong>@lang('account.customer_due'):</strong> <span></span></small>
 					</div>

@@ -938,6 +938,14 @@
             <div class="col-md-12">
               <div class="checkbox">
                 <label>
+                  {!! Form::radio('radio_option[so_view]', 'so.view_verified', in_array('so.view_verified', $role_permissions), 
+                  [ 'class' => 'input-icheck']); !!} View only verified sales orders
+                </label>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="checkbox">
+                <label>
                   {!! Form::checkbox('permissions[]', 'so.create', in_array('so.create', $role_permissions), 
                   [ 'class' => 'input-icheck']); !!} {{ __( 'lang_v1.create_so' ) }}
                 </label>

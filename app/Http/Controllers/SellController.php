@@ -89,6 +89,7 @@ class SellController extends Controller
         $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
 
         if (request()->ajax()) {
+
             $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);
             $with = [];
             $shipping_statuses = $this->transactionUtil->shipping_statuses();
@@ -305,7 +306,11 @@ class SellController extends Controller
             }
 
             if ($sale_type == 'sales_order') {
-                if (! auth()->user()->can('so.view_all') && auth()->user()->can('so.view_own')) {
+                if ($is_admin || auth()->user()->can('so.view_all')) {
+                    // no additional filter
+                } elseif (auth()->user()->can('so.view_verified')) {
+                    $sells->where('transactions.is_verified', 1);
+                } elseif (auth()->user()->can('so.view_own')) {
                     $sells->where('transactions.created_by', request()->session()->get('user.id'));
                 }
             }
@@ -437,15 +442,18 @@ class SellController extends Controller
 
                                 $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?delivery_note=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.delivery_note').'</a></li>';
                             }
-                            
-                            // Add verification action for admins
-                            if (auth()->user()->can('sell.verify')) {
-                                if (!$row->is_verified) {
-                                    $html .= '<li><form action="'.action([\App\Http\Controllers\SellController::class, 'verifySell'], [$row->id]).'" method="POST" style="display:inline-block;">'.csrf_field().'<button type="submit" class="btn btn-link p-0"><i class="fas fa-check-circle"></i> '.__('lang_v1.verify_sell').'</button></form></li>';
-                                } else {
-                                    $html .= '<li><form action="'.action([\App\Http\Controllers\SellController::class, 'unverifySell'], [$row->id]).'" method="POST" style="display:inline-block;">'.csrf_field().'<button type="submit" class="btn btn-link p-0"><i class="fas fa-times-circle"></i> '.__('lang_v1.unverify_sell').'</button></form></li>';
-                                }
+                        }
+                        
+                        // Add verification action for admins - now for both sell and sales_order types
+                        if (in_array($row->type, ['sell', 'sales_order']) && auth()->user()->can('sell.verify')) {
+                            if (!$row->is_verified) {
+                                $html .= '<li><form action="'.action([\App\Http\Controllers\SellController::class, 'verifySell'], [$row->id]).'" method="POST" style="display:inline-block;">'.csrf_field().'<button type="submit" class="btn btn-link p-0"><i class="fas fa-check-circle"></i> '.__('lang_v1.verify_sell').'</button></form></li>';
+                            } else {
+                                $html .= '<li><form action="'.action([\App\Http\Controllers\SellController::class, 'unverifySell'], [$row->id]).'" method="POST" style="display:inline-block;">'.csrf_field().'<button type="submit" class="btn btn-link p-0"><i class="fas fa-times-circle"></i> '.__('lang_v1.unverify_sell').'</button></form></li>';
                             }
+                        }
+                        
+                        if ($row->type == 'sell') {
                             
                             $html .= '<li class="divider"></li>';
                             if (! $only_shipments) {
@@ -630,6 +638,7 @@ class SellController extends Controller
 
             return $datatable->rawColumns($rawColumns)
                       ->make(true);
+
         }
 
         $business_locations = BusinessLocation::forDropdown($business_id, false);
@@ -650,6 +659,11 @@ class SellController extends Controller
         }
 
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
+        $verification_statuses = [
+            ''  => __('lang_v1.all'),
+            '1' => __('lang_v1.verified'),
+            '0' => __('lang_v1.not_verified')
+        ];
 
         $sources = $this->transactionUtil->getSources($business_id);
         if ($is_woocommerce) {
@@ -660,7 +674,7 @@ class SellController extends Controller
 
 
         return view('sell.index')
-        ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'sources', 'payment_types'));
+        ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'verification_statuses', 'sources', 'payment_types'));
     }
 
     /**
@@ -1744,7 +1758,7 @@ class SellController extends Controller
             $business_id = request()->session()->get('user.business_id');
             
             $transaction = Transaction::where('business_id', $business_id)
-                                ->where('type', 'sell')
+                                ->whereIn('type', ['sell', 'sales_order'])
                                 ->findOrFail($id);
             
             // Store the transaction state before update for activity log
@@ -1785,7 +1799,7 @@ class SellController extends Controller
         try {
             $business_id = request()->session()->get('user.business_id');
             $transaction = Transaction::where('business_id', $business_id)
-                                ->where('type', 'sell')
+                                ->whereIn('type', ['sell', 'sales_order'])
                                 ->findOrFail($id);
             // Store the transaction state before update for logging
             $transaction_before = $transaction->replicate();

@@ -68,8 +68,14 @@ class SalesOrderController extends Controller
             $sales_order_statuses[$key] = $value['label'];
         }
 
+        $verification_statuses = [
+            ''  => __('lang_v1.all'),
+            '1' => __('lang_v1.verified'),
+            '0' => __('lang_v1.not_verified')
+        ];
+
         return view('sales_order.index')
-            ->with(compact('business_locations', 'customers', 'shipping_statuses', 'sales_order_statuses'));
+            ->with(compact('business_locations', 'customers', 'shipping_statuses', 'sales_order_statuses', 'verification_statuses'));
     }
 
     public function getSalesOrders($customer_id)

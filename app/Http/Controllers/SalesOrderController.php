@@ -52,7 +52,7 @@ class SalesOrderController extends Controller
      */
     public function index()
     {
-        if (! auth()->user()->can('so.view_own') && ! auth()->user()->can('so.view_all') && ! auth()->user()->can('so.create')) {
+        if (! auth()->user()->can('so.view_own') && ! auth()->user()->can('so.view_all') && ! auth()->user()->can('so.create') && ! auth()->user()->can('so.view_verified')) {
             abort(403, 'Unauthorized action.');
         }
 

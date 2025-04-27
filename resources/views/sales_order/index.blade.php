@@ -52,7 +52,7 @@
                 </div>
             @endslot
         @endcan
-        @if( auth()->user()->can('so.view_own') || auth()->user()->can('so.view_all'))
+        @if( auth()->user()->can('so.view_own') || auth()->user()->can('so.view_all') || auth()->user()->can('so.view_verified'))
         <div class="table-responsive">
             <table class="table table-bordered table-striped ajax_view" id="sell_table">
                 <thead>

@@ -70,7 +70,7 @@
                             <th>@lang('messages.date')</th>
                             <th>@lang('sale.invoice_no')</th>
                             <th>@lang('sale.customer_name')</th>
-                            <th>@lang('lang_v1.contact_no')</th>
+                            <th>@lang('lang_v1.assigned_to')</th>
                             <th>@lang('sale.location')</th>
                             <th>@lang('sale.payment_status')</th>
                             <th>@lang('lang_v1.payment_method')</th>
@@ -99,7 +99,7 @@
                     <tbody></tbody>
                     <tfoot>
                         <tr class="bg-gray font-17 footer-total text-center">
-                            <td colspan="6"><strong>@lang('sale.total'):</strong></td>
+                            <td colspan="5"><strong>@lang('sale.total'):</strong></td>
                             <td class="footer_payment_status_count"></td>
                             <td class="payment_method_count"></td>
                             <td class="footer_sale_total"></td>
@@ -173,6 +173,10 @@
                         d.created_by = $('#created_by').val();
                         d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
                         d.service_staffs = $('#service_staffs').val();
+                        
+                        if ($('#assigned_to').length) {
+                            d.assigned_to = $('#assigned_to').val();
+                        }
 
                         if ($('#shipping_status').length) {
                             d.shipping_status = $('#shipping_status').val();
@@ -215,8 +219,10 @@
                         name: 'conatct_name'
                     },
                     {
-                        data: 'mobile',
-                        name: 'contacts.mobile'
+                        data: 'assigned_to',
+                        name: 'assigned_to',
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: 'business_location',
@@ -378,7 +384,7 @@
             });
 
             $(document).on('change',
-                '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #sell_list_filter_source, #payment_method',
+                '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #sell_list_filter_source, #payment_method, #assigned_to',
                 function() {
                     sell_table.ajax.reload();
                 });

@@ -1570,4 +1570,5 @@ return [
     'deactive_product_tooltip' => 'Deactivated products will not be available for purchase or sell',
     'paid_amount' => 'Paid Amount',
     'profit_by_service_staff' => 'Profit by service staff',
+    'customer_sales_due' => 'Customer Sales Due',
 ];

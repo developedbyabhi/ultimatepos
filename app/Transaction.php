@@ -407,5 +407,29 @@ class Transaction extends Model
         return $sales_orders;
     }
 
+    /**
+     * Returns the users assigned to this transaction's contact
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getAssignedUsersAttribute()
+    {
+        if (!empty($this->contact)) {
+            return $this->contact->userHavingAccess;
+        }
+        
+        return collect([]);
+    }
+
+    /**
+     * Returns the full names of users assigned to this transaction's contact
+     * 
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAssignedUserNamesAttribute()
+    {
+        \Log::info($this->assigned_users);
+        return $this->assigned_users->pluck('user_full_name');
+    }
    
 }

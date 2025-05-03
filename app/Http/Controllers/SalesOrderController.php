@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\BusinessLocation;
 use App\Contact;
 use App\Transaction;
+use App\User;
 use App\Utils\BusinessUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\Util;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SalesOrderController extends Controller
 {
@@ -74,8 +76,20 @@ class SalesOrderController extends Controller
             '0' => __('lang_v1.not_verified')
         ];
 
+        $assigned_users = [];
+        if (config('constants.enable_contact_assign')) {
+            // $assigned_users = User::whereHas('contactAccess', function ($query) use ($business_id) {
+            //     $query->where('contacts.business_id', $business_id);
+            // })->pluck('username', 'id')->toArray();
+            $assigned_users = User::whereHas('contactAccess', function($q) use ($business_id) {
+                $q->where('contacts.business_id', $business_id);
+            })
+            ->select('id', DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"))
+            ->pluck('full_name', 'id');
+        }
+
         return view('sales_order.index')
-            ->with(compact('business_locations', 'customers', 'shipping_statuses', 'sales_order_statuses', 'verification_statuses'));
+            ->with(compact('business_locations', 'customers', 'shipping_statuses', 'sales_order_statuses', 'verification_statuses', 'assigned_users'));
     }
 
     public function getSalesOrders($customer_id)

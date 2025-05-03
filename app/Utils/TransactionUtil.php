@@ -5091,7 +5091,13 @@ class TransactionUtil extends Util
                     'tables.name as table_name',
                     DB::raw('SUM(tsl.quantity - tsl.so_quantity_invoiced) as so_qty_remaining'),
                     'transactions.is_export',
-                    DB::raw("CONCAT(COALESCE(dp.surname, ''),' ',COALESCE(dp.first_name, ''),' ',COALESCE(dp.last_name,'')) as delivery_person")
+                    DB::raw("CONCAT(COALESCE(dp.surname, ''),' ',COALESCE(dp.first_name, ''),' ',COALESCE(dp.last_name,'')) as delivery_person"),
+                    DB::raw("(
+                        SELECT GROUP_CONCAT(CONCAT(COALESCE(u2.first_name, ''), ' ', COALESCE(u2.last_name, '')) SEPARATOR ', ')
+                        FROM user_contact_access uca
+                        JOIN users u2 ON u2.id = uca.user_id
+                        WHERE uca.contact_id = contacts.id
+                    ) as assigned_to")
                 );
 
         if ($sale_type == 'sell') {

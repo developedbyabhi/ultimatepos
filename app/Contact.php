@@ -388,4 +388,14 @@ class Contact extends Authenticatable
     {
         return $this->belongsToMany(\App\User::class, 'user_contact_access');
     }
+
+    /**
+     * Get the names of all users assigned to this contact
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getAssignedUserNamesAttribute()
+    {
+        return $this->userHavingAccess->pluck('user_full_name');
+    }
 }

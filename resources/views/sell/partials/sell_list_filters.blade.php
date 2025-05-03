@@ -67,6 +67,14 @@
         </div>
     </div>
 @endif
+@if(empty($only) || in_array('assigned_to', $only))
+<div class="col-md-3">
+  <div class="form-group">
+    {!! Form::label('assigned_to', __('lang_v1.assigned_to') . ':') !!}
+    {!! Form::select('assigned_to', $assigned_users, null, ['class' => 'form-control select2', 'id' => 'assigned_to', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]) !!}
+  </div>
+</div>
+@endif
 @if(empty($only) || in_array('only_subscriptions', $only))
 <div class="col-md-3" style="margin-bottom: 7px;">
     <div class="form-group">

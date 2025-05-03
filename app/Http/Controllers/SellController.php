@@ -97,7 +97,6 @@ class SellController extends Controller
             $sale_type = ! empty(request()->input('sale_type')) ? request()->input('sale_type') : 'sell';
 
             $sells = $this->transactionUtil->getListSells($business_id, $sale_type);
-
             // only display sell invoice we add it because project invoive show in sell list
             if($sale_type == 'sell'){
                 $sells->where(function ($query) {
@@ -114,13 +113,7 @@ class SellController extends Controller
                 $sells->whereIn('transactions.location_id', $permitted_locations);
             }
 
-            //Add condition for created_by,used in sales representative sales report
-            if (request()->has('created_by')) {
-                $created_by = request()->get('created_by');
-                if (! empty($created_by)) {
-                    $sells->where('transactions.created_by', $created_by);
-                }
-            }
+            // Filter by assigned users is now handled separately
 
             $partial_permissions = ['view_own_sell_only', 'view_commission_agent_sell', 'access_own_shipping', 'access_commission_agent_shipping'];
             if (! auth()->user()->can('direct_sell.view')) {
@@ -265,7 +258,16 @@ class SellController extends Controller
                 $sells->where('transactions.sub_type', request()->input('sub_type'));
             }
 
-            if (! empty(request()->input('created_by'))) {
+            if (request()->has('assigned_to')) {
+                $u = request()->get('assigned_to');
+                if (!empty($u)) {
+                    $sells->whereHas('contact', function($q) use($u) {
+                        $q->whereHas('userHavingAccess', function($q2) use($u) {
+                            $q2->where('user_id', $u);
+                        });
+                    });
+                }
+            } elseif (! empty(request()->input('created_by'))) {
                 $sells->where('transactions.created_by', request()->input('created_by'));
             }
 
@@ -348,6 +350,8 @@ class SellController extends Controller
             }
 
             $with[] = 'payment_lines';
+            $with[] = 'sales_person';
+            $with[] = 'contact.userHavingAccess';
             
             if (!empty($with)) {
                 foreach ($with as $relation) {
@@ -625,6 +629,16 @@ class SellController extends Controller
                     }
                 })
                 ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
+                ->addColumn('assigned_to', function ($row) {
+                    $names = $row->assigned_to;
+                    return !empty($names) 
+                        ? $names
+                        : null;
+                })
+                ->addColumn('customer_sales_due', function($row) use ($business_id) {
+                    $due = $this->transactionUtil->getContactDue($row->contact_id, $business_id);
+                    return '<span class="contact_due" data-orig-value="'.$due.'" data-highlight=true>'.$this->transactionUtil->num_f($due, true).'</span>';
+                })
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can('sell.view') || auth()->user()->can('view_own_sell_only')) {
@@ -634,7 +648,7 @@ class SellController extends Controller
                         }
                     }, ]);
 
-            $rawColumns = ['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'verification_status'];
+            $rawColumns = ['final_total', 'action', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status', 'verification_status', 'assigned_to', 'customer_sales_due'];
 
             return $datatable->rawColumns($rawColumns)
                       ->make(true);
@@ -644,6 +658,13 @@ class SellController extends Controller
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $customers = Contact::customersDropdown($business_id, false);
         $sales_representative = User::forDropdown($business_id, false, false, true);
+        
+        // Get users who are assigned to at least one customer
+        $assigned_users = User::whereHas('contactAccess', function($q) use ($business_id) {
+                $q->where('contacts.business_id', $business_id);
+            })
+            ->select('id', DB::raw("CONCAT(COALESCE(surname, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) as full_name"))
+            ->pluck('full_name', 'id');
 
         //Commission agent filter
         $is_cmsn_agent_enabled = request()->session()->get('business.sales_cmsn_agnt');
@@ -674,7 +695,7 @@ class SellController extends Controller
 
 
         return view('sell.index')
-        ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'verification_statuses', 'sources', 'payment_types'));
+        ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'verification_statuses', 'sources', 'payment_types', 'assigned_users'));
     }
 
     /**
@@ -973,7 +994,7 @@ class SellController extends Controller
         $taxes = TaxRate::forBusinessDropdown($business_id, true, true);
 
         $transaction = Transaction::where('business_id', $business_id)
-                            ->with(['price_group', 'types_of_service', 'media', 'media.uploaded_by_user'])
+                            ->with(['price_group', 'types_of_service', 'media', 'media.uploaded_by_user', 'contact.userHavingAccess'])
                             ->whereIn('type', ['sell', 'sales_order'])
                             ->findorfail($id);
 

@@ -24,12 +24,6 @@
                 {!! Form::select('sell_list_filter_customer_id', $customers, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                {!! Form::label('so_list_filter_status',  __('sale.status') . ':') !!}
-                {!! Form::select('so_list_filter_status', $sales_order_statuses, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
-            </div>
-        </div>
         {{-- <div class="col-md-3">
             <div class="form-group">
                 {!! Form::label('so_list_verification_status', __('lang_v1.verification_status') . ':') !!}
@@ -42,6 +36,14 @@
                 {!! Form::text('sell_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']); !!}
             </div>
         </div>
+        @if (config('constants.enable_contact_assign') === true)
+          <div class="col-md-3">
+            <div class="form-group">
+              {!! Form::label('assigned_to', __('lang_v1.assigned_to') . ':') !!}
+              {!! Form::select('assigned_to', $assigned_users, null, ['class' => 'form-control select2', 'id' => 'assigned_to', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]) !!}
+            </div>
+          </div>
+        @endif
     @endcomponent
     @component('components.widget', ['class' => 'box-primary'])
         @can('so.create')
@@ -61,9 +63,9 @@
                         <th>@lang('messages.date')</th>
                         <th>@lang('restaurant.order_no')</th>
                         <th>@lang('sale.customer_name')</th>
-                        <th>@lang('lang_v1.contact_no')</th>
+                        <th>@lang('lang_v1.customer_sales_due')</th>
+                        <th>@lang('lang_v1.assigned_to')</th>
                         <th>@lang('sale.location')</th>
-                        <th>@lang('sale.status')</th>
                         <th>@lang('lang_v1.verification_status')</th>
                         <th>@lang('lang_v1.quantity_remaining')</th>
                         <th>@lang('lang_v1.added_by')</th>
@@ -119,8 +121,8 @@ $(document).ready( function(){
              //       d.is_verified = $('#so_list_verification_status').val();
             //    }
 
-                if($('#created_by').length) {
-                    d.created_by = $('#created_by').val();
+                if($('#assigned_to').length) {
+                    d.assigned_to = $('#assigned_to').val();
                 }
             }
         },
@@ -134,15 +136,15 @@ $(document).ready( function(){
             { data: 'transaction_date', name: 'transaction_date'  },
             { data: 'invoice_no', name: 'invoice_no'},
             { data: 'conatct_name', name: 'conatct_name'},
-            { data: 'mobile', name: 'contacts.mobile'},
+            { data: 'customer_sales_due', name: 'contact_due', orderable: false, searchable: false },
+            { data: 'assigned_to', name: 'sales_person.full_name'},
             { data: 'business_location', name: 'bl.name'},
-            { data: 'status', name: 'status'},
             { data: 'verification_status', name: 'verification_status'},
             { data: 'so_qty_remaining', name: 'so_qty_remaining', "searchable": false},
             { data: 'added_by', name: 'u.first_name'},
         ]
     });
-    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #created_by, #so_list_filter_status, #so_list_verification_status',  function() {
+    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #assigned_to, #so_list_verification_status',  function() {
         sell_table.ajax.reload();
     });
 });

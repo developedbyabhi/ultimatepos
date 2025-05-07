@@ -44,11 +44,11 @@
 						{!! Form::select("products[$row_count][warranty_id]", $warranties, $warranty_id, ['placeholder' => __('messages.please_select'), 'class' => 'form-control']); !!}
 					</div>
 				@endif
-				<div class="form-group col-xs-12">
+				{{-- <div class="form-group col-xs-12">
 		      		<label>@lang('lang_v1.description')</label>
 		      		<textarea class="form-control" name="products[{{$row_count}}][sell_line_note]" rows="3">{{$sell_line_note}}</textarea>
 		      		<p class="help-block">@lang('lang_v1.sell_line_description_help')</p>
-		      	</div>
+		      	</div> --}}
 			</div>
 		</div>
 		<div class="modal-footer">

@@ -637,7 +637,9 @@ class SellController extends Controller
                 })
                 ->addColumn('customer_sales_due', function($row) {
                     $business_id = request()->session()->get('user.business_id');
-                    $due = $this->transactionUtil->getContactDue($row->id, $business_id);
+                    $customerId = optional(Contact::where('contact_id', $row->contact_id)->where('type', 'customer')->first())->id;
+
+                    $due = $this->transactionUtil->getContactDue($customerId, $business_id);
                     return '<span class="contact_due" data-orig-value="' . $due . '" data-highlight="true">' . $this->transactionUtil->num_f($due, true) . '</span>';
                 })
                 ->setRowAttr([

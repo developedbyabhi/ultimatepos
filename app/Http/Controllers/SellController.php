@@ -635,9 +635,10 @@ class SellController extends Controller
                         ? $names
                         : null;
                 })
-                ->addColumn('customer_sales_due', function($row) use ($business_id) {
-                    $due = $this->transactionUtil->getContactDue($row->contact_id, $business_id);
-                    return '<span class="contact_due" data-orig-value="'.$due.'" data-highlight=true>'.$this->transactionUtil->num_f($due, true).'</span>';
+                ->addColumn('customer_sales_due', function($row) {
+                    $business_id = request()->session()->get('user.business_id');
+                    $due = $this->transactionUtil->getContactDue($row->id, $business_id);
+                    return '<span class="contact_due" data-orig-value="' . $due . '" data-highlight="true">' . $this->transactionUtil->num_f($due, true) . '</span>';
                 })
                 ->setRowAttr([
                     'data-href' => function ($row) {
